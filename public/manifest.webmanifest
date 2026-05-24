@@ -4,8 +4,8 @@
   "description": "16-week progressive strength program",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#0f0f1a",
-  "theme_color": "#0f0f1a",
+  "background_color": "#FAFAF7",
+  "theme_color": "#FAFAF7",
   "orientation": "portrait",
   "icons": [
     {

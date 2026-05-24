@@ -2,8 +2,8 @@ html, body, #root {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: #0f0f1a;
-  /* Safe-area insets for iPhone notch / home indicator */
+  background: #FAFAF7;
+  color: #1A1A1F;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
@@ -22,7 +22,15 @@ button {
   appearance: none;
 }
 
-/* Make button presses feel responsive on touch */
+input, select, textarea {
+  font-family: inherit;
+  color: #1A1A1F;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #A8A8B0;
+}
+
 button:active {
   transform: scale(0.98);
   transition: transform 0.05s ease-out;

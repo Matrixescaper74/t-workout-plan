@@ -16,25 +16,24 @@ export default function App() {
   return (
     <div style={{
       fontFamily: "'Georgia', serif",
-      background: "linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)",
+      background: "linear-gradient(180deg, #FFFFFF 0%, #FAFAF7 100%)",
       minHeight: "100vh",
-      color: "#e8e8f0",
+      color: "#1A1A1F",
       padding: "0",
     }}>
       {/* Header */}
       <div style={{
-        background: "linear-gradient(90deg, #0f0f1a, #1e1e3f)",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        background: "#FFFFFF",
+        borderBottom: "1px solid rgba(0,0,0,0.06)",
         padding: isMobile ? "20px 18px 14px" : "28px 32px 18px",
       }}>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <div style={{ fontSize: 11, letterSpacing: 4, color: "#888", textTransform: "uppercase", marginBottom: 6 }}>
+          <div style={{ fontSize: 11, letterSpacing: 4, color: "#8C8C95", textTransform: "uppercase", marginBottom: 6 }}>
             Personalized Training Program
           </div>
           <h1 style={{
             margin: 0, fontSize: isMobile ? 22 : 26, fontWeight: "normal", letterSpacing: -0.5,
-            background: "linear-gradient(90deg, #fff 0%, #a0c4e8 100%)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            color: "#1A1A1F",
           }}>
             Tammy's Strength & Nutrition Plan
           </h1>
@@ -50,13 +49,14 @@ export default function App() {
                   padding: "10px 18px",
                   minHeight: 44,
                   borderRadius: 8,
-                  border: section === s.id ? "1px solid rgba(160,196,232,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                  border: section === s.id ? "1px solid #2D6B7C" : "1px solid rgba(0,0,0,0.08)",
                   background: section === s.id
-                    ? "linear-gradient(135deg, rgba(160,196,232,0.18), rgba(160,196,232,0.06))"
-                    : "rgba(255,255,255,0.03)",
-                  color: section === s.id ? "#fff" : "#aaa",
+                    ? "#EBF4F7"
+                    : "#FFFFFF",
+                  color: section === s.id ? "#1A1A1F" : "#4C4C57",
                   fontSize: 13,
                   fontFamily: "'Georgia', serif",
+                  fontWeight: section === s.id ? "bold" : "normal",
                   cursor: "pointer",
                   transition: "all 0.2s",
                 }}

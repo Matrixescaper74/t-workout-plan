@@ -8,8 +8,8 @@ export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now })
       <div style={{
         padding: "14px 18px",
         borderRadius: 10,
-        background: "rgba(255,255,255,0.03)",
-        border: "1px dashed rgba(255,255,255,0.12)",
+        background: "#FFFFFF",
+        border: "1px dashed rgba(0,0,0,0.15)",
         marginBottom: 14,
         display: "flex",
         alignItems: "center",
@@ -17,8 +17,8 @@ export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now })
         flexWrap: "wrap",
         gap: 10,
       }}>
-        <div style={{ fontSize: 13, color: "#bbb" }}>
-          <span style={{ color: "#fff", fontWeight: "bold" }}>💊 Levothyroxine</span> — take when you wake, then tap below
+        <div style={{ fontSize: 13, color: "#4C4C57" }}>
+          <span style={{ color: "#1A1A1F", fontWeight: "bold" }}>💊 Levothyroxine</span> — take when you wake, then tap below
         </div>
         <button
           onClick={onTakeLevo}
@@ -26,8 +26,8 @@ export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now })
             padding: "10px 16px",
             minHeight: 44,
             borderRadius: 8,
-            background: "#4A90A4",
-            color: "#fff",
+            background: "#2D6B7C",
+            color: "#FFFFFF",
             border: "none",
             cursor: "pointer",
             fontSize: 13,
@@ -46,15 +46,15 @@ export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now })
       <div style={{
         padding: "10px 14px",
         borderRadius: 10,
-        background: "rgba(46,139,87,0.10)",
-        border: "1px solid rgba(46,139,87,0.30)",
+        background: "#E8F5E9",
+        border: "1px solid #A5D6A7",
         marginBottom: 14,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         gap: 10,
       }}>
-        <div style={{ fontSize: 12, color: "#9bd3b0" }}>
+        <div style={{ fontSize: 12, color: "#1B5E20" }}>
           ✅ Levo absorbed — eat anything (taken {formatTimeOfDay(levoTakenAt)})
         </div>
         <button
@@ -62,8 +62,8 @@ export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now })
           style={{
             padding: "6px 10px",
             background: "transparent",
-            border: "1px solid rgba(255,255,255,0.1)",
-            color: "#888",
+            border: "1px solid rgba(0,0,0,0.1)",
+            color: "#4C4C57",
             borderRadius: 6,
             fontSize: 11,
             cursor: "pointer",
@@ -82,12 +82,12 @@ export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now })
     phase === "soft" ? levoMinutesRemaining(levoTakenAt, 60, now) :
     levoMinutesRemaining(levoTakenAt, 240, now);
 
-  const isStrong = phase === "blocked";
-  const banner = isStrong
-    ? { bg: "rgba(232,131,58,0.16)", border: "rgba(232,131,58,0.50)", text: "#FFC58F", emoji: "⏱️" }
-    : phase === "soft"
-    ? { bg: "rgba(232,131,58,0.10)", border: "rgba(232,131,58,0.30)", text: "#E8B080", emoji: "⌛" }
-    : { bg: "rgba(107,94,168,0.08)", border: "rgba(107,94,168,0.25)", text: "#B0A6D6", emoji: "💊" };
+  const banner =
+    phase === "blocked"
+      ? { bg: "#FFF1E0", border: "#E8A765", text: "#8B4513", emoji: "⏱️" }
+      : phase === "soft"
+      ? { bg: "#FFF7EB", border: "#E8C49A", text: "#9B5A1F", emoji: "⌛" }
+      : { bg: "#F4F1FA", border: "#C5BCE0", text: "#4A3E73", emoji: "💊" };
 
   const headline =
     phase === "blocked" ? `Wait ${remaining} more min before food or coffee` :
@@ -111,7 +111,7 @@ export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now })
         <span style={{ fontSize: 20 }}>{banner.emoji}</span>
         <div>
           <div style={{ fontSize: 13, color: banner.text, fontWeight: "bold" }}>{headline}</div>
-          <div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>
+          <div style={{ fontSize: 11, color: "#757583", marginTop: 2 }}>
             Levo taken at {formatTimeOfDay(levoTakenAt)} ({elapsed} min ago)
           </div>
         </div>
@@ -121,8 +121,8 @@ export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now })
         style={{
           padding: "6px 10px",
           background: "transparent",
-          border: "1px solid rgba(255,255,255,0.1)",
-          color: "#888",
+          border: "1px solid rgba(0,0,0,0.15)",
+          color: "#4C4C57",
           borderRadius: 6,
           fontSize: 11,
           cursor: "pointer",

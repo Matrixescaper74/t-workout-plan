@@ -54,9 +54,9 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
           padding: "12px 14px",
           minHeight: 44,
           borderRadius: 8,
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          color: "#fff",
+          background: "#FFFFFF",
+          border: "1px solid rgba(0,0,0,0.10)",
+          color: "#1A1A1F",
           fontSize: 14,
           marginBottom: 12,
           fontFamily: "'Georgia', serif",
@@ -74,9 +74,9 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
               padding: "6px 12px",
               minHeight: 32,
               borderRadius: 16,
-              background: activeCategory === cat ? `${phaseColor}33` : "rgba(255,255,255,0.03)",
-              border: `1px solid ${activeCategory === cat ? phaseColor : "rgba(255,255,255,0.08)"}`,
-              color: activeCategory === cat ? phaseColor : "#aaa",
+              background: activeCategory === cat ? `${phaseColor}14` : "#FFFFFF",
+              border: `1px solid ${activeCategory === cat ? phaseColor : "rgba(0,0,0,0.08)"}`,
+              color: activeCategory === cat ? phaseColor : "#4C4C57",
               cursor: "pointer",
               fontSize: 11,
               fontWeight: activeCategory === cat ? "bold" : "normal",
@@ -89,9 +89,9 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
       </div>
 
       {/* Food list */}
-      <div style={{ borderRadius: 10, border: "1px solid rgba(255,255,255,0.08)", overflow: "hidden", marginBottom: 14 }}>
+      <div style={{ borderRadius: 10, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", marginBottom: 14, background: "#FFFFFF" }}>
         {filtered.length === 0 ? (
-          <div style={{ padding: 20, textAlign: "center", color: "#666", fontSize: 13, fontStyle: "italic" }}>
+          <div style={{ padding: 20, textAlign: "center", color: "#8C8C95", fontSize: 13, fontStyle: "italic" }}>
             No matches. Try a different search or add a custom food below.
           </div>
         ) : (
@@ -99,19 +99,19 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
             <div key={food.id} style={{
               display: "flex", alignItems: "center", gap: 10,
               padding: "12px 14px",
-              background: i % 2 === 0 ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.01)",
-              borderBottom: i < filtered.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+              background: i % 2 === 0 ? "#FFFFFF" : "rgba(0,0,0,0.02)",
+              borderBottom: i < filtered.length - 1 ? "1px solid rgba(0,0,0,0.05)" : "none",
               flexWrap: "wrap",
             }}>
               <div style={{ flex: 2, minWidth: 140 }}>
-                <div style={{ fontSize: 13, color: "#e0e0ee" }}>{food.name}</div>
-                <div style={{ fontSize: 10, color: "#777", marginTop: 2 }}>
+                <div style={{ fontSize: 13, color: "#1A1A1F" }}>{food.name}</div>
+                <div style={{ fontSize: 10, color: "#9D9DA5", marginTop: 2 }}>
                   {food.serving}
                 </div>
-                <div style={{ fontSize: 10, color: "#999", marginTop: 2 }}>
-                  <span style={{ color: "#bbb", fontWeight: "bold" }}>{food.protein}g protein</span>
+                <div style={{ fontSize: 10, color: "#757583", marginTop: 2 }}>
+                  <span style={{ color: "#1A1A1F", fontWeight: "bold" }}>{food.protein}g protein</span>
                   {" · "}{food.calories} cal · {food.carbs}g carbs · {food.fat}g fat
-                  {food.levoInterference === "high" && <span style={{ color: "#E8B080", marginLeft: 6 }}>· high levo interference</span>}
+                  {food.levoInterference === "high" && <span style={{ color: "#8B4513", marginLeft: 6 }}>· high levo interference</span>}
                 </div>
               </div>
               <button
@@ -119,7 +119,7 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
                 style={{
                   padding: "6px 12px",
                   minHeight: 32,
-                  background: `${phaseColor}33`,
+                  background: `${phaseColor}14`,
                   border: `1px solid ${phaseColor}66`,
                   borderRadius: 6,
                   color: phaseColor,
@@ -144,10 +144,10 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
             width: "100%",
             padding: "12px",
             minHeight: 44,
-            background: "rgba(255,255,255,0.03)",
-            border: "1px dashed rgba(255,255,255,0.15)",
+            background: "#FFFFFF",
+            border: "1px dashed rgba(0,0,0,0.15)",
             borderRadius: 10,
-            color: "#888",
+            color: "#4C4C57",
             fontSize: 13,
             cursor: "pointer",
             fontFamily: "'Georgia', serif",
@@ -160,15 +160,15 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
           onSubmit={submitCustom}
           style={{
             padding: 14,
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: "#FFFFFF",
+            border: "1px solid rgba(0,0,0,0.10)",
             borderRadius: 10,
             display: "flex",
             flexDirection: "column",
             gap: 10,
           }}
         >
-          <div style={{ fontSize: 11, color: "#666", textTransform: "uppercase", letterSpacing: 2 }}>New food</div>
+          <div style={{ fontSize: 11, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 2 }}>New food</div>
           <input
             type="text"
             placeholder="Food name (e.g. Cottage cheese)"
@@ -203,8 +203,8 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
               onClick={() => setShowCustomForm(false)}
               style={{
                 flex: 1, padding: "10px", minHeight: 44, borderRadius: 6,
-                background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
-                color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "'Georgia', serif",
+                background: "transparent", border: "1px solid rgba(0,0,0,0.10)",
+                color: "#4C4C57", fontSize: 13, cursor: "pointer", fontFamily: "'Georgia', serif",
               }}
             >Cancel</button>
             <button
@@ -212,7 +212,7 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
               style={{
                 flex: 1, padding: "10px", minHeight: 44, borderRadius: 6,
                 background: phaseColor, border: "none",
-                color: "#fff", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "'Georgia', serif",
+                color: "#FFFFFF", fontSize: 13, fontWeight: "bold", cursor: "pointer", fontFamily: "'Georgia', serif",
               }}
             >Save</button>
           </div>
@@ -226,9 +226,9 @@ const inputStyle = {
   padding: "10px 12px",
   minHeight: 40,
   borderRadius: 6,
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  color: "#fff",
+  background: "#FFFFFF",
+  border: "1px solid rgba(0,0,0,0.10)",
+  color: "#1A1A1F",
   fontSize: 13,
   fontFamily: "'Georgia', serif",
   boxSizing: "border-box",

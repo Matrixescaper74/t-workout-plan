@@ -14,13 +14,14 @@ export default function PlansView({ customFoods, onAddTemplate, onAddSingleFood,
         <div key={slot}>
           <div style={{
             fontSize: 13,
-            color: "#fff",
+            color: "#1A1A1F",
             textTransform: "uppercase",
             letterSpacing: 2,
             marginBottom: 10,
             display: "flex",
             alignItems: "center",
             gap: 8,
+            fontWeight: "bold",
           }}>
             <span style={{ color: phaseColor }}>●</span> {slot}
           </div>
@@ -33,19 +34,20 @@ export default function PlansView({ customFoods, onAddTemplate, onAddSingleFood,
                   style={{
                     padding: "14px 16px",
                     borderRadius: 10,
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    background: "#FFFFFF",
+                    border: "1px solid rgba(0,0,0,0.08)",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                   }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 8 }}>
-                    <div style={{ fontSize: 14, color: "#fff", flex: 1, minWidth: 200 }}>{template.name}</div>
+                    <div style={{ fontSize: 14, color: "#1A1A1F", flex: 1, minWidth: 200, fontWeight: "bold" }}>{template.name}</div>
                     <button
                       onClick={() => onAddTemplate(template)}
                       style={{
                         padding: "8px 14px",
                         minHeight: 36,
                         borderRadius: 6,
-                        background: `${phaseColor}33`,
+                        background: `${phaseColor}14`,
                         border: `1px solid ${phaseColor}66`,
                         color: phaseColor,
                         cursor: "pointer",
@@ -58,19 +60,19 @@ export default function PlansView({ customFoods, onAddTemplate, onAddSingleFood,
                     </button>
                   </div>
 
-                  <div style={{ fontSize: 11, color: "#888", marginBottom: 8, fontStyle: "italic" }}>
+                  <div style={{ fontSize: 11, color: "#757583", marginBottom: 8, fontStyle: "italic" }}>
                     {Math.round(macros.protein)}g protein · {Math.round(macros.calories)} cal · {Math.round(macros.carbs)}g carbs · {Math.round(macros.fat)}g fat
                   </div>
 
                   {template.note && (
                     <div style={{
                       fontSize: 11,
-                      color: "#FFC58F",
+                      color: "#8B4513",
                       marginBottom: 8,
                       padding: "6px 10px",
-                      background: "rgba(232,131,58,0.10)",
+                      background: "#FFF1E0",
                       borderRadius: 6,
-                      border: "1px solid rgba(232,131,58,0.20)",
+                      border: "1px solid #E8C49A",
                     }}>
                       ⓘ {template.note}
                     </div>
@@ -82,18 +84,18 @@ export default function PlansView({ customFoods, onAddTemplate, onAddSingleFood,
                       if (!food) return null;
                       return (
                         <div key={ii} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
-                          <span style={{ color: "#888" }}>·</span>
-                          <span style={{ color: "#ccc", flex: 1 }}>
-                            {food.name} <span style={{ color: "#666" }}>({food.serving})</span>
+                          <span style={{ color: "#A8A8B0" }}>·</span>
+                          <span style={{ color: "#2A2A2F", flex: 1 }}>
+                            {food.name} <span style={{ color: "#9D9DA5" }}>({food.serving})</span>
                           </span>
                           <button
                             onClick={() => onAddSingleFood(food.id, item.servings ?? 1)}
                             style={{
                               padding: "2px 8px",
                               background: "transparent",
-                              border: "1px solid rgba(255,255,255,0.1)",
+                              border: "1px solid rgba(0,0,0,0.10)",
                               borderRadius: 4,
-                              color: "#888",
+                              color: "#4C4C57",
                               fontSize: 10,
                               cursor: "pointer",
                             }}
