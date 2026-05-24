@@ -75,6 +75,15 @@ export function removeEntry(entryId) {
   return day;
 }
 
+export function updateEntryServings(entryId, newServings) {
+  const day = readDay();
+  day.entries = day.entries.map(e =>
+    e.id === entryId ? { ...e, servings: Math.max(0.5, Number(newServings.toFixed(1))) } : e
+  );
+  writeDay(todayKey(), day);
+  return day;
+}
+
 export function setLevoTakenNow() {
   const day = readDay();
   day.levoTakenAt = new Date().toISOString();

@@ -3,7 +3,7 @@ import { useIsMobile } from "./lib/useIsMobile.js";
 import { phases } from "./data/workoutPhases.js";
 import { getTargets } from "./data/targets.js";
 import {
-  readDay, addEntry, addMealTemplate, removeEntry,
+  readDay, addEntry, addMealTemplate, removeEntry, updateEntryServings,
   setLevoTakenNow, clearLevo,
   readCustomFoods, addCustomFood,
 } from "./lib/storage.js";
@@ -48,6 +48,10 @@ export default function Meals({ activePhase }) {
   };
   const handleRemove = (entryId) => {
     removeEntry(entryId);
+    refresh();
+  };
+  const handleUpdateServings = (entryId, newServings) => {
+    updateEntryServings(entryId, newServings);
     refresh();
   };
   const handleTakeLevo = () => {
@@ -116,6 +120,7 @@ export default function Meals({ activePhase }) {
           now={now}
           onAddFood={handleAddFood}
           onRemove={handleRemove}
+          onUpdateServings={handleUpdateServings}
           phaseColor={phase.color}
         />
       )}

@@ -1,7 +1,23 @@
 import { getFoodById, foods as builtInFoods } from "../data/foods.js";
 import { formatTimeOfDay, levoWarningForFood } from "../lib/macros.js";
 
-export default function LogView({ entries, customFoods, levoTakenAt, now, onAddFood, onRemove, phaseColor }) {
+const servingsBtnStyle = {
+  width: 32,
+  height: 32,
+  background: "rgba(255,255,255,0.06)",
+  border: "none",
+  borderRadius: 4,
+  color: "#ddd",
+  cursor: "pointer",
+  fontSize: 16,
+  fontWeight: "bold",
+  fontFamily: "inherit",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+export default function LogView({ entries, customFoods, levoTakenAt, now, onAddFood, onRemove, onUpdateServings, phaseColor }) {
   const allFoods = [...builtInFoods, ...customFoods];
   const favorites = allFoods.filter(f => f.favorite);
 
@@ -101,8 +117,39 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                     {formatTimeOfDay(entry.timestamp)}
                   </div>
                   <div style={{ flex: 2, minWidth: 140, fontSize: 14, color: "#e0e0ee" }}>
-                    <div>{food.name}{s !== 1 ? ` ×${s}` : ""}</div>
+                    <div>{food.name}</div>
                     <div style={{ fontSize: 10, color: "#666", marginTop: 2 }}>{food.serving}</div>
+                  </div>
+                  {/* Servings adjuster */}
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    background: "rgba(255,255,255,0.04)",
+                    borderRadius: 6,
+                    padding: 2,
+                    flexShrink: 0,
+                  }}>
+                    <button
+                      onClick={() => s > 0.5 ? onUpdateServings(entry.id, s - 0.5) : onRemove(entry.id)}
+                      style={servingsBtnStyle}
+                      title={s > 0.5 ? "Less" : "Remove"}
+                    >
+                      −
+                    </button>
+                    <div style={{
+                      minWidth: 36, textAlign: "center",
+                      fontSize: 12, color: "#e0e0ee", fontWeight: "bold",
+                    }}>
+                      {s % 1 === 0 ? s : s.toFixed(1)}×
+                    </div>
+                    <button
+                      onClick={() => onUpdateServings(entry.id, s + 0.5)}
+                      style={servingsBtnStyle}
+                      title="More"
+                    >
+                      +
+                    </button>
                   </div>
                   <div style={{ flex: 1, minWidth: 160, fontSize: 11, color: "#888" }}>
                     <div style={{ color: "#bbb", fontWeight: "bold" }}>
@@ -124,7 +171,7 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                       fontSize: 14,
                       flexShrink: 0,
                     }}
-                    title="Remove"
+                    title="Remove entry"
                   >
                     ×
                   </button>
