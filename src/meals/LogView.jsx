@@ -51,12 +51,12 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                   alignItems: "center",
                   gap: 6,
                 }}
-                title={warning.message || `${food.protein}g protein · ${food.calories} cal`}
+                title={warning.message || `${food.protein}g protein · ${food.calories} cal · serving: ${food.serving}`}
               >
                 {warning.level === "block" && <span>⚠️</span>}
                 <span>{food.name}</span>
                 <span style={{ color: phaseColor, fontSize: 10, fontWeight: "bold" }}>
-                  +{food.protein}p
+                  {food.protein}g protein
                 </span>
               </button>
             );
@@ -101,10 +101,16 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                     {formatTimeOfDay(entry.timestamp)}
                   </div>
                   <div style={{ flex: 2, minWidth: 140, fontSize: 14, color: "#e0e0ee" }}>
-                    {food.name}{s !== 1 ? ` ×${s}` : ""}
+                    <div>{food.name}{s !== 1 ? ` ×${s}` : ""}</div>
+                    <div style={{ fontSize: 10, color: "#666", marginTop: 2 }}>{food.serving}</div>
                   </div>
-                  <div style={{ flex: 1, minWidth: 140, fontSize: 11, color: "#888", fontStyle: "italic" }}>
-                    {Math.round(food.protein * s)}p · {Math.round(food.carbs * s)}c · {Math.round(food.fat * s)}f · {Math.round(food.calories * s)} cal
+                  <div style={{ flex: 1, minWidth: 160, fontSize: 11, color: "#888" }}>
+                    <div style={{ color: "#bbb", fontWeight: "bold" }}>
+                      {Math.round(food.protein * s)}g protein
+                    </div>
+                    <div style={{ fontStyle: "italic", marginTop: 2 }}>
+                      {Math.round(food.calories * s)} cal · {Math.round(food.carbs * s)}g carbs · {Math.round(food.fat * s)}g fat
+                    </div>
                   </div>
                   <button
                     onClick={() => onRemove(entry.id)}

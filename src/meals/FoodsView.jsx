@@ -106,7 +106,11 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
               <div style={{ flex: 2, minWidth: 140 }}>
                 <div style={{ fontSize: 13, color: "#e0e0ee" }}>{food.name}</div>
                 <div style={{ fontSize: 10, color: "#777", marginTop: 2 }}>
-                  {food.serving} · {food.protein}p · {food.carbs}c · {food.fat}f · {food.calories} cal
+                  {food.serving}
+                </div>
+                <div style={{ fontSize: 10, color: "#999", marginTop: 2 }}>
+                  <span style={{ color: "#bbb", fontWeight: "bold" }}>{food.protein}g protein</span>
+                  {" · "}{food.calories} cal · {food.carbs}g carbs · {food.fat}g fat
                   {food.levoInterference === "high" && <span style={{ color: "#E8B080", marginLeft: 6 }}>· high levo interference</span>}
                 </div>
               </div>
