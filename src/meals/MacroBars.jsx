@@ -16,7 +16,7 @@ function Bar({ label, current, target, status, phaseColor, unit }) {
           {label}
         </span>
         <span style={{ fontSize: 12, color: "#1A1A1F", fontWeight: "bold" }}>
-          {Math.round(current)}{unit ? unit : ""} <span style={{ color: "#A8A8B0", fontWeight: "normal" }}>/ {target}{unit ? unit : ""}</span>
+          {Math.round(current)}{unit ? unit : ""} <span style={{ color: "#85858F", fontWeight: "normal" }}>/ {target}{unit ? unit : ""}</span>
         </span>
       </div>
       <div style={{ height: 6, borderRadius: 3, background: "rgba(0,0,0,0.06)", overflow: "hidden" }}>
@@ -43,7 +43,7 @@ export default function MacroBars({ entries, customFoods, target, phaseColor }) 
       marginBottom: 14,
       boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
     }}>
-      <div style={{ fontSize: 11, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 2, marginBottom: 12 }}>
+      <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2, marginBottom: 12 }}>
         Today's Totals
       </div>
       <Bar

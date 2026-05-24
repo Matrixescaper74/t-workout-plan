@@ -1,9 +1,12 @@
 import { mealPlans, MEAL_SLOTS } from "../data/mealPlans.js";
 import { getFoodById, foods as builtInFoods } from "../data/foods.js";
-import { sumMacros } from "../lib/macros.js";
+import { sumMacros, formatAmountFull } from "../lib/macros.js";
 
 function macrosForTemplate(template, customFoods) {
-  const entries = template.items.map(it => ({ foodId: it.foodId, servings: it.servings ?? 1 }));
+  const entries = template.items.map(it => {
+    const food = getFoodById(it.foodId, customFoods);
+    return { foodId: it.foodId, amount: it.amount ?? food?.defaultAmount ?? 1 };
+  });
   return sumMacros(entries, customFoods);
 }
 
@@ -60,7 +63,7 @@ export default function PlansView({ customFoods, onAddTemplate, onAddSingleFood,
                     </button>
                   </div>
 
-                  <div style={{ fontSize: 11, color: "#757583", marginBottom: 8, fontStyle: "italic" }}>
+                  <div style={{ fontSize: 11, color: "#5C5C66", marginBottom: 8, fontStyle: "italic" }}>
                     {Math.round(macros.protein)}g protein · {Math.round(macros.calories)} cal · {Math.round(macros.carbs)}g carbs · {Math.round(macros.fat)}g fat
                   </div>
 
@@ -82,18 +85,19 @@ export default function PlansView({ customFoods, onAddTemplate, onAddSingleFood,
                     {template.items.map((item, ii) => {
                       const food = getFoodById(item.foodId, customFoods);
                       if (!food) return null;
+                      const amount = item.amount ?? food.defaultAmount;
                       return (
                         <div key={ii} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
-                          <span style={{ color: "#A8A8B0" }}>·</span>
+                          <span style={{ color: "#85858F" }}>·</span>
                           <span style={{ color: "#2A2A2F", flex: 1 }}>
-                            {food.name} <span style={{ color: "#9D9DA5" }}>({food.serving})</span>
+                            {food.name} <span style={{ color: "#75757F" }}>({formatAmountFull(amount, food)})</span>
                           </span>
                           <button
-                            onClick={() => onAddSingleFood(food.id, item.servings ?? 1)}
+                            onClick={() => onAddSingleFood(food.id, amount)}
                             style={{
                               padding: "2px 8px",
                               background: "transparent",
-                              border: "1px solid rgba(0,0,0,0.10)",
+                              border: "1px solid rgba(0,0,0,0.12)",
                               borderRadius: 4,
                               color: "#4C4C57",
                               fontSize: 10,

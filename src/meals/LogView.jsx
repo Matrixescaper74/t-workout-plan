@@ -1,15 +1,22 @@
 import { getFoodById, foods as builtInFoods } from "../data/foods.js";
-import { formatTimeOfDay, levoWarningForFood } from "../lib/macros.js";
+import {
+  formatTimeOfDay,
+  formatAmountFull,
+  formatAmountShort,
+  getEntryAmount,
+  macrosForEntry,
+  levoWarningForFood,
+} from "../lib/macros.js";
 
 const servingsBtnStyle = {
-  width: 32,
-  height: 32,
+  width: 34,
+  height: 34,
   background: "rgba(0,0,0,0.05)",
   border: "none",
   borderRadius: 4,
   color: "#1A1A1F",
   cursor: "pointer",
-  fontSize: 16,
+  fontSize: 18,
   fontWeight: "bold",
   fontFamily: "inherit",
   display: "flex",
@@ -17,7 +24,7 @@ const servingsBtnStyle = {
   justifyContent: "center",
 };
 
-export default function LogView({ entries, customFoods, levoTakenAt, now, onAddFood, onRemove, onUpdateServings, phaseColor }) {
+export default function LogView({ entries, customFoods, levoTakenAt, now, onAddFood, onRemove, onUpdateAmount, phaseColor }) {
   const allFoods = [...builtInFoods, ...customFoods];
   const favorites = allFoods.filter(f => f.favorite);
 
@@ -33,7 +40,7 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
     <div>
       {/* Quick-add favorites */}
       <div style={{ marginBottom: 18 }}>
-        <div style={{ fontSize: 11, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>
+        <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>
           Quick Add
         </div>
         <div style={{
@@ -66,7 +73,7 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                   gap: 6,
                   boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                 }}
-                title={warning.message || `${food.protein}g protein · ${food.calories} cal · serving: ${food.serving}`}
+                title={warning.message || `${food.protein}g protein · ${food.calories} cal · serving: ${formatAmountFull(food.defaultAmount, food)}`}
               >
                 {warning.level === "block" && <span>⚠️</span>}
                 <span>{food.name}</span>
@@ -81,14 +88,14 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
 
       {/* Today's entries */}
       <div>
-        <div style={{ fontSize: 11, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>
+        <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>
           Today ({entries.length} {entries.length === 1 ? "entry" : "entries"})
         </div>
         {entries.length === 0 ? (
           <div style={{
             padding: "30px 20px",
             textAlign: "center",
-            color: "#8C8C95",
+            color: "#75757F",
             fontSize: 13,
             fontStyle: "italic",
             border: "1px dashed rgba(0,0,0,0.10)",
@@ -102,7 +109,10 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
             {[...entries].reverse().map((entry, i) => {
               const food = getFoodById(entry.foodId, customFoods);
               if (!food) return null;
-              const s = entry.servings ?? 1;
+              const amount = getEntryAmount(entry, food);
+              const macros = macrosForEntry(entry, food);
+              const step = food.step ?? 0.5;
+              const minAmount = food.minAmount ?? 0.5;
               return (
                 <div key={entry.id} style={{
                   display: "flex",
@@ -113,14 +123,16 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                   gap: 12,
                   flexWrap: "wrap",
                 }}>
-                  <div style={{ minWidth: 60, fontSize: 11, color: "#9D9DA5", flexShrink: 0 }}>
+                  <div style={{ minWidth: 60, fontSize: 11, color: "#75757F", flexShrink: 0 }}>
                     {formatTimeOfDay(entry.timestamp)}
                   </div>
                   <div style={{ flex: 2, minWidth: 140, fontSize: 14, color: "#1A1A1F" }}>
                     <div>{food.name}</div>
-                    <div style={{ fontSize: 10, color: "#9D9DA5", marginTop: 2 }}>{food.serving}</div>
+                    {food.descriptor && (
+                      <div style={{ fontSize: 10, color: "#75757F", marginTop: 2 }}>{food.descriptor}</div>
+                    )}
                   </div>
-                  {/* Servings adjuster */}
+                  {/* Amount adjuster — shows actual amount in food's natural unit */}
                   <div style={{
                     display: "flex",
                     alignItems: "center",
@@ -131,32 +143,36 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                     flexShrink: 0,
                   }}>
                     <button
-                      onClick={() => s > 0.5 ? onUpdateServings(entry.id, s - 0.5) : onRemove(entry.id)}
+                      onClick={() => {
+                        const next = amount - step;
+                        if (next < minAmount) onRemove(entry.id);
+                        else onUpdateAmount(entry.id, next);
+                      }}
                       style={servingsBtnStyle}
-                      title={s > 0.5 ? "Less" : "Remove"}
+                      title={amount > minAmount ? "Less" : "Remove"}
                     >
                       −
                     </button>
                     <div style={{
-                      minWidth: 36, textAlign: "center",
-                      fontSize: 12, color: "#1A1A1F", fontWeight: "bold",
+                      minWidth: 70, textAlign: "center",
+                      fontSize: 13, color: "#1A1A1F", fontWeight: "bold",
                     }}>
-                      {s % 1 === 0 ? s : s.toFixed(1)}×
+                      {formatAmountShort(amount, food)}
                     </div>
                     <button
-                      onClick={() => onUpdateServings(entry.id, s + 0.5)}
+                      onClick={() => onUpdateAmount(entry.id, amount + step)}
                       style={servingsBtnStyle}
                       title="More"
                     >
                       +
                     </button>
                   </div>
-                  <div style={{ flex: 1, minWidth: 160, fontSize: 11, color: "#757583" }}>
+                  <div style={{ flex: 1, minWidth: 160, fontSize: 11, color: "#5C5C66" }}>
                     <div style={{ color: "#1A1A1F", fontWeight: "bold" }}>
-                      {Math.round(food.protein * s)}g protein
+                      {Math.round(macros.protein)}g protein
                     </div>
                     <div style={{ fontStyle: "italic", marginTop: 2 }}>
-                      {Math.round(food.calories * s)} cal · {Math.round(food.carbs * s)}g carbs · {Math.round(food.fat * s)}g fat
+                      {Math.round(macros.calories)} cal · {Math.round(macros.carbs)}g carbs · {Math.round(macros.fat)}g fat
                     </div>
                   </div>
                   <button
@@ -164,9 +180,9 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                     style={{
                       width: 32, height: 32,
                       background: "transparent",
-                      border: "1px solid rgba(0,0,0,0.1)",
+                      border: "1px solid rgba(0,0,0,0.10)",
                       borderRadius: 16,
-                      color: "#8C8C95",
+                      color: "#6E6E78",
                       cursor: "pointer",
                       fontSize: 14,
                       flexShrink: 0,

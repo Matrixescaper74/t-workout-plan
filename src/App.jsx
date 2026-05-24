@@ -28,7 +28,7 @@ export default function App() {
         padding: isMobile ? "20px 18px 14px" : "28px 32px 18px",
       }}>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <div style={{ fontSize: 11, letterSpacing: 4, color: "#8C8C95", textTransform: "uppercase", marginBottom: 6 }}>
+          <div style={{ fontSize: 11, letterSpacing: 4, color: "#6E6E78", textTransform: "uppercase", marginBottom: 6 }}>
             Personalized Training Program
           </div>
           <h1 style={{

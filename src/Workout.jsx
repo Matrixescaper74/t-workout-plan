@@ -40,7 +40,7 @@ export default function Workout({ activePhase, setActivePhase }) {
             >
               <div style={{ fontSize: 20, marginBottom: 4 }}>{p.icon}</div>
               <div style={{ fontSize: 13, fontWeight: "bold", marginBottom: 2 }}>{p.name}</div>
-              <div style={{ fontSize: 11, color: activePhase === i ? p.color : "#8C8C95" }}>{p.weeks}</div>
+              <div style={{ fontSize: 11, color: activePhase === i ? p.color : "#6E6E78" }}>{p.weeks}</div>
             </button>
           ))}
         </div>
@@ -67,9 +67,9 @@ export default function Workout({ activePhase, setActivePhase }) {
               </p>
             </div>
             <div style={{ textAlign: "right", minWidth: 140 }}>
-              <div style={{ fontSize: 11, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Frequency</div>
+              <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Frequency</div>
               <div style={{ fontSize: 14, color: phase.color, fontWeight: "bold" }}>{phase.training.frequency}</div>
-              <div style={{ fontSize: 11, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 1, marginTop: 10, marginBottom: 4 }}>Rest Periods</div>
+              <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 1, marginTop: 10, marginBottom: 4 }}>Rest Periods</div>
               <div style={{ fontSize: 13, color: "#4C4C57" }}>{phase.training.rest}</div>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function Workout({ activePhase, setActivePhase }) {
                   }}
                 >
                   {d.day.split("—")[0].trim()}
-                  <span style={{ color: activeDay === i ? phase.color : "#A8A8B0", marginLeft: 4, fontSize: 11 }}>
+                  <span style={{ color: activeDay === i ? phase.color : "#85858F", marginLeft: 4, fontSize: 11 }}>
                     {d.day.includes("—") ? "— " + d.day.split("—")[1].trim() : ""}
                   </span>
                 </button>
@@ -237,18 +237,18 @@ export default function Workout({ activePhase, setActivePhase }) {
               display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12
             }}>
               <div style={{ padding: "18px", borderRadius: 10, background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.08)" }}>
-                <div style={{ fontSize: 11, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>Daily Protein Target</div>
+                <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>Daily Protein Target</div>
                 <div style={{ fontSize: 22, color: phase.color, fontWeight: "bold", marginBottom: 4 }}>{phase.nutrition.protein.split(" ")[0]}</div>
                 <div style={{ fontSize: 13, color: "#4C4C57" }}>{phase.nutrition.protein.split(" ").slice(1).join(" ")}</div>
               </div>
               <div style={{ padding: "18px", borderRadius: 10, background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.08)" }}>
-                <div style={{ fontSize: 11, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>Daily Calories</div>
+                <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>Daily Calories</div>
                 <div style={{ fontSize: 22, color: phase.color, fontWeight: "bold", marginBottom: 4 }}>{phase.nutrition.calories.split(" ")[0]}</div>
                 <div style={{ fontSize: 13, color: "#4C4C57" }}>{phase.nutrition.calories.split(" ").slice(1).join(" ")}</div>
               </div>
             </div>
             <div style={{ padding: "18px", borderRadius: 10, background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.08)" }}>
-              <div style={{ fontSize: 12, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 2, marginBottom: 14 }}>Phase Tips</div>
+              <div style={{ fontSize: 12, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2, marginBottom: 14 }}>Phase Tips</div>
               {phase.nutrition.tips.map((tip, i) => (
                 <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
                   <div style={{ color: phase.color, fontSize: 14, flexShrink: 0, marginTop: 1, fontWeight: "bold" }}>→</div>
@@ -270,7 +270,7 @@ export default function Workout({ activePhase, setActivePhase }) {
         {/* Milestones Tab */}
         {activeTab === "milestones" && (
           <div style={{ padding: "20px", borderRadius: 10, background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.08)" }}>
-            <div style={{ fontSize: 12, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 2, marginBottom: 18 }}>
+            <div style={{ fontSize: 12, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2, marginBottom: 18 }}>
               End-of-Phase Milestones
             </div>
             {phase.milestones.map((m, i) => (

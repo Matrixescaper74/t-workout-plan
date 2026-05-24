@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { foods as builtInFoods, FOOD_CATEGORIES } from "../data/foods.js";
+import { formatAmountFull } from "../lib/macros.js";
 
 export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseColor }) {
   const [search, setSearch] = useState("");
@@ -28,7 +29,11 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
       id: `custom-${Date.now()}`,
       name: customDraft.name.trim(),
       category: customDraft.category,
-      serving: customDraft.serving.trim() || "1 serving",
+      unit: "serving",
+      defaultAmount: 1,
+      step: 0.5,
+      minAmount: 0.5,
+      descriptor: customDraft.serving.trim(),
       protein: Number(customDraft.protein) || 0,
       carbs: Number(customDraft.carbs) || 0,
       fat: Number(customDraft.fat) || 0,
@@ -91,7 +96,7 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
       {/* Food list */}
       <div style={{ borderRadius: 10, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", marginBottom: 14, background: "#FFFFFF" }}>
         {filtered.length === 0 ? (
-          <div style={{ padding: 20, textAlign: "center", color: "#8C8C95", fontSize: 13, fontStyle: "italic" }}>
+          <div style={{ padding: 20, textAlign: "center", color: "#6E6E78", fontSize: 13, fontStyle: "italic" }}>
             No matches. Try a different search or add a custom food below.
           </div>
         ) : (
@@ -105,10 +110,10 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
             }}>
               <div style={{ flex: 2, minWidth: 140 }}>
                 <div style={{ fontSize: 13, color: "#1A1A1F" }}>{food.name}</div>
-                <div style={{ fontSize: 10, color: "#9D9DA5", marginTop: 2 }}>
-                  {food.serving}
+                <div style={{ fontSize: 10, color: "#75757F", marginTop: 2 }}>
+                  {formatAmountFull(food.defaultAmount, food)}
                 </div>
-                <div style={{ fontSize: 10, color: "#757583", marginTop: 2 }}>
+                <div style={{ fontSize: 10, color: "#5C5C66", marginTop: 2 }}>
                   <span style={{ color: "#1A1A1F", fontWeight: "bold" }}>{food.protein}g protein</span>
                   {" · "}{food.calories} cal · {food.carbs}g carbs · {food.fat}g fat
                   {food.levoInterference === "high" && <span style={{ color: "#8B4513", marginLeft: 6 }}>· high levo interference</span>}
@@ -168,7 +173,7 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
             gap: 10,
           }}
         >
-          <div style={{ fontSize: 11, color: "#8C8C95", textTransform: "uppercase", letterSpacing: 2 }}>New food</div>
+          <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2 }}>New food</div>
           <input
             type="text"
             placeholder="Food name (e.g. Cottage cheese)"

@@ -111,7 +111,7 @@ export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now })
         <span style={{ fontSize: 20 }}>{banner.emoji}</span>
         <div>
           <div style={{ fontSize: 13, color: banner.text, fontWeight: "bold" }}>{headline}</div>
-          <div style={{ fontSize: 11, color: "#757583", marginTop: 2 }}>
+          <div style={{ fontSize: 11, color: "#5C5C66", marginTop: 2 }}>
             Levo taken at {formatTimeOfDay(levoTakenAt)} ({elapsed} min ago)
           </div>
         </div>

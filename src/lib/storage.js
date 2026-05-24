@@ -22,7 +22,7 @@ function safeWriteJSON(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // localStorage full or disabled — silently drop
+    // localStorage full or disabled
   }
 }
 
@@ -41,26 +41,34 @@ export function writeDay(dateKey, dayData) {
   safeWriteJSON(LOG_KEY, log);
 }
 
-export function addEntry(foodId, servings = 1) {
+function newEntryId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+// addEntry now takes an explicit `amount` in the food's natural unit.
+// Caller passes food.defaultAmount when adding a normal portion.
+export function addEntry(foodId, amount) {
   const day = readDay();
   day.entries.push({
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    id: newEntryId(),
     foodId,
-    servings,
+    amount,
     timestamp: new Date().toISOString(),
   });
   writeDay(todayKey(), day);
   return day;
 }
 
-export function addMealTemplate(template) {
+// addEntries pushes multiple items in one go (used for meal templates).
+// Each item: { foodId, amount }
+export function addEntries(items) {
   const day = readDay();
-  const now = Date.now();
-  template.items.forEach((item, i) => {
+  const baseTime = Date.now();
+  items.forEach((item, i) => {
     day.entries.push({
-      id: `${now + i}-${Math.random().toString(36).slice(2, 8)}`,
+      id: `${baseTime + i}-${Math.random().toString(36).slice(2, 8)}`,
       foodId: item.foodId,
-      servings: item.servings ?? 1,
+      amount: item.amount,
       timestamp: new Date().toISOString(),
     });
   });
@@ -75,10 +83,10 @@ export function removeEntry(entryId) {
   return day;
 }
 
-export function updateEntryServings(entryId, newServings) {
+export function updateEntryAmount(entryId, newAmount) {
   const day = readDay();
   day.entries = day.entries.map(e =>
-    e.id === entryId ? { ...e, servings: Math.max(0.5, Number(newServings.toFixed(1))) } : e
+    e.id === entryId ? { ...e, amount: Number(newAmount.toFixed(2)) } : e
   );
   writeDay(todayKey(), day);
   return day;

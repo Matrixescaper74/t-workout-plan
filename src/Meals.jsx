@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useIsMobile } from "./lib/useIsMobile.js";
 import { phases } from "./data/workoutPhases.js";
 import { getTargets } from "./data/targets.js";
+import { getFoodById } from "./data/foods.js";
 import {
-  readDay, addEntry, addMealTemplate, removeEntry, updateEntryServings,
+  readDay, addEntry, addEntries, removeEntry, updateEntryAmount,
   setLevoTakenNow, clearLevo,
   readCustomFoods, addCustomFood,
 } from "./lib/storage.js";
@@ -38,20 +39,29 @@ export default function Meals({ activePhase }) {
 
   const refresh = () => setDay(readDay());
 
-  const handleAddFood = (foodId, servings = 1) => {
-    addEntry(foodId, servings);
+  const handleAddFood = (foodId, amount) => {
+    const food = getFoodById(foodId, customFoods);
+    if (!food) return;
+    addEntry(foodId, amount ?? food.defaultAmount);
     refresh();
   };
   const handleAddTemplate = (template) => {
-    addMealTemplate(template);
+    const items = template.items
+      .map(item => {
+        const food = getFoodById(item.foodId, customFoods);
+        if (!food) return null;
+        return { foodId: item.foodId, amount: item.amount ?? food.defaultAmount };
+      })
+      .filter(Boolean);
+    addEntries(items);
     refresh();
   };
   const handleRemove = (entryId) => {
     removeEntry(entryId);
     refresh();
   };
-  const handleUpdateServings = (entryId, newServings) => {
-    updateEntryServings(entryId, newServings);
+  const handleUpdateAmount = (entryId, newAmount) => {
+    updateEntryAmount(entryId, newAmount);
     refresh();
   };
   const handleTakeLevo = () => {
@@ -121,7 +131,7 @@ export default function Meals({ activePhase }) {
           now={now}
           onAddFood={handleAddFood}
           onRemove={handleRemove}
-          onUpdateServings={handleUpdateServings}
+          onUpdateAmount={handleUpdateAmount}
           phaseColor={phase.color}
         />
       )}
