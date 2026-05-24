@@ -36,7 +36,8 @@ export const foods = [
   { id: "grapes", name: "Grapes", category: "Fruit", unit: "cup", defaultAmount: 1, step: 0.5, minAmount: 0.5, descriptor: "", protein: 1, carbs: 27, fat: 0, calories: 105, levoInterference: "medium", favorite: true },
 
   // ---- Carbs / starches ----
-  { id: "white-sweet-potato", name: "White sweet potato", category: "Carb", unit: "medium", defaultAmount: 1, step: 0.5, minAmount: 0.5, descriptor: "baked", protein: 2, carbs: 26, fat: 0, calories: 110, levoInterference: "medium", favorite: true },
+  { id: "sweet-potato", name: "Sweet potato", category: "Carb", unit: "medium", defaultAmount: 1, step: 0.5, minAmount: 0.5, descriptor: "baked", protein: 2, carbs: 24, fat: 0, calories: 100, levoInterference: "medium", favorite: true },
+  { id: "white-potato", name: "White potato", category: "Carb", unit: "medium", defaultAmount: 1, step: 0.5, minAmount: 0.5, descriptor: "baked, russet", protein: 4, carbs: 37, fat: 0, calories: 160, levoInterference: "medium", favorite: true },
   { id: "white-rice", name: "White rice", category: "Carb", unit: "cup", defaultAmount: 0.5, step: 0.25, minAmount: 0.25, descriptor: "cooked", protein: 2, carbs: 22, fat: 0, calories: 100, levoInterference: "medium", favorite: false },
   { id: "rice-cake-caramel", name: "Caramel rice cake", category: "Carb", unit: "cake", defaultAmount: 1, step: 1, minAmount: 1, descriptor: "", protein: 1, carbs: 11, fat: 0, calories: 50, levoInterference: "medium", favorite: false },
   { id: "rice-cake-chocolate", name: "Chocolate rice cake", category: "Carb", unit: "cake", defaultAmount: 1, step: 1, minAmount: 1, descriptor: "", protein: 1, carbs: 13, fat: 0.5, calories: 60, levoInterference: "medium", favorite: false },

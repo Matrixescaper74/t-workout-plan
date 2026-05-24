@@ -7,7 +7,7 @@ import {
   readDay, addEntry, addEntries, removeEntry, updateEntryAmount,
   setLevoTakenNow, clearLevo,
   readCustomFoods, addCustomFood,
-  readDateRange, pruneOldDays, todayKey, keyToDate,
+  readDateRange, pruneOldDays, todayKey, keyToDate, migrateFoodIds,
 } from "./lib/storage.js";
 
 import MacroBars from "./meals/MacroBars.jsx";
@@ -37,8 +37,9 @@ export default function Meals({ activePhase }) {
   const phase = phases[activePhase];
   const target = getTargets(activePhase);
 
-  // Prune old days on mount
+  // Migrate any renamed food IDs and prune old days on mount
   useEffect(() => {
+    migrateFoodIds();
     pruneOldDays(RETAIN_DAYS);
   }, []);
 

@@ -16,7 +16,7 @@ export const mealPlans = {
       name: "Scrambled eggs + white sweet potato + apple",
       items: [
         { foodId: "scrambled-eggs" },
-        { foodId: "white-sweet-potato" },
+        { foodId: "sweet-potato" },
         { foodId: "apple" },
       ],
     },
@@ -60,7 +60,7 @@ export const mealPlans = {
       name: "Ground turkey + white sweet potato + side salad",
       items: [
         { foodId: "ground-turkey" },
-        { foodId: "white-sweet-potato" },
+        { foodId: "sweet-potato" },
         { foodId: "side-salad" },
       ],
     },
@@ -92,13 +92,21 @@ export const mealPlans = {
       ],
       note: "Lighter lunch — Quest chips give the protein.",
     },
+    {
+      name: "Grilled chicken + white potato + sauerkraut",
+      items: [
+        { foodId: "chicken-breast" },
+        { foodId: "white-potato" },
+        { foodId: "sauerkraut" },
+      ],
+    },
   ],
   Dinner: [
     {
       name: "White fish + white sweet potato + side salad",
       items: [
         { foodId: "white-fish" },
-        { foodId: "white-sweet-potato" },
+        { foodId: "sweet-potato" },
         { foodId: "side-salad" },
       ],
     },
@@ -134,6 +142,14 @@ export const mealPlans = {
         { foodId: "sauerkraut" },
       ],
       note: "Steak in moderation — save for a treat night.",
+    },
+    {
+      name: "Lean hamburger + white potato + side salad",
+      items: [
+        { foodId: "lean-hamburger" },
+        { foodId: "white-potato" },
+        { foodId: "side-salad" },
+      ],
     },
   ],
   Snacks: [

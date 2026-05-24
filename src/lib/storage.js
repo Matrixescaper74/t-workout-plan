@@ -26,6 +26,34 @@ function safeReadJSON(key, fallback) {
   }
 }
 
+// One-time foodId renames (e.g. when we split or rename foods). Run on app boot.
+const FOOD_ID_MIGRATIONS = {
+  "white-sweet-potato": "sweet-potato",
+};
+
+export function migrateFoodIds() {
+  const raw = (() => {
+    try { return localStorage.getItem(LOG_KEY); } catch { return null; }
+  })();
+  if (!raw) return;
+  let log;
+  try { log = JSON.parse(raw); } catch { return; }
+  let changed = false;
+  for (const dateKey of Object.keys(log)) {
+    const day = log[dateKey];
+    if (!day?.entries) continue;
+    day.entries = day.entries.map(e => {
+      const newId = FOOD_ID_MIGRATIONS[e.foodId];
+      if (newId) {
+        changed = true;
+        return { ...e, foodId: newId };
+      }
+      return e;
+    });
+  }
+  if (changed) safeWriteJSON(LOG_KEY, log);
+}
+
 function safeWriteJSON(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
