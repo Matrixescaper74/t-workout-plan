@@ -2,11 +2,19 @@ const LOG_KEY = "mealLog";
 const CUSTOM_FOODS_KEY = "customFoods";
 
 export function todayKey() {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
+  return dateToKey(new Date());
+}
+
+export function dateToKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
+}
+
+export function keyToDate(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(y, m - 1, d);
 }
 
 function safeReadJSON(key, fallback) {
@@ -104,6 +112,47 @@ export function clearLevo() {
   day.levoTakenAt = null;
   writeDay(todayKey(), day);
   return day;
+}
+
+// Returns an array of the last `numDays` days (oldest first, today last).
+// Each entry: { dateKey, date, day, isToday }. Empty days have day.entries = [].
+export function readDateRange(numDays = 7, endingOn = todayKey()) {
+  const log = readLog();
+  const days = [];
+  const end = keyToDate(endingOn);
+  const today = todayKey();
+  for (let i = numDays - 1; i >= 0; i--) {
+    const d = new Date(end);
+    d.setDate(d.getDate() - i);
+    const key = dateToKey(d);
+    days.push({
+      dateKey: key,
+      date: d,
+      day: log[key] ?? { levoTakenAt: null, entries: [] },
+      isToday: key === today,
+    });
+  }
+  return days;
+}
+
+// Remove any date keys older than (today - retainDays + 1).
+// retainDays=7 keeps today + 6 past days = 7 total.
+export function pruneOldDays(retainDays = 7) {
+  const log = readLog();
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retainDays + 1);
+  const cutoffKey = dateToKey(cutoff);
+  let changed = false;
+  const newLog = {};
+  for (const k of Object.keys(log)) {
+    if (k >= cutoffKey) {
+      newLog[k] = log[k];
+    } else {
+      changed = true;
+    }
+  }
+  if (changed) safeWriteJSON(LOG_KEY, newLog);
+  return changed;
 }
 
 export function readCustomFoods() {

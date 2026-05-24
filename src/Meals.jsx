@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useIsMobile } from "./lib/useIsMobile.js";
 import { phases } from "./data/workoutPhases.js";
 import { getTargets } from "./data/targets.js";
@@ -7,6 +7,7 @@ import {
   readDay, addEntry, addEntries, removeEntry, updateEntryAmount,
   setLevoTakenNow, clearLevo,
   readCustomFoods, addCustomFood,
+  readDateRange, pruneOldDays, todayKey, keyToDate,
 } from "./lib/storage.js";
 
 import MacroBars from "./meals/MacroBars.jsx";
@@ -14,6 +15,7 @@ import LevoPanel from "./meals/LevoPanel.jsx";
 import LogView from "./meals/LogView.jsx";
 import PlansView from "./meals/PlansView.jsx";
 import FoodsView from "./meals/FoodsView.jsx";
+import WeekStrip from "./meals/WeekStrip.jsx";
 
 const SUB_TABS = [
   { id: "log", label: "Log", icon: "📋" },
@@ -21,23 +23,53 @@ const SUB_TABS = [
   { id: "foods", label: "Foods", icon: "🥑" },
 ];
 
+const RETAIN_DAYS = 7;
+
+function formatLongDate(date) {
+  const months = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+}
+
 export default function Meals({ activePhase }) {
   const isMobile = useIsMobile();
   const phase = phases[activePhase];
   const target = getTargets(activePhase);
 
-  const [day, setDay] = useState(() => readDay());
+  // Prune old days on mount
+  useEffect(() => {
+    pruneOldDays(RETAIN_DAYS);
+  }, []);
+
+  const [todayKeyValue] = useState(() => todayKey());
+  const [viewingDate, setViewingDate] = useState(todayKeyValue);
+  const [refreshCounter, setRefreshCounter] = useState(0);
   const [customFoods, setCustomFoods] = useState(() => readCustomFoods());
   const [activeSubTab, setActiveSubTab] = useState("log");
   const [now, setNow] = useState(() => new Date());
 
-  // Tick every 30s so Levo countdown stays fresh without burning battery
+  // Tick every 30s so Levo countdown stays fresh
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(id);
   }, []);
 
-  const refresh = () => setDay(readDay());
+  const isHistory = viewingDate !== todayKeyValue;
+
+  // Recompute when refresh counter changes
+  const days = useMemo(() => readDateRange(RETAIN_DAYS, todayKeyValue), [todayKeyValue, refreshCounter]);
+  const day = useMemo(() => {
+    const found = days.find(d => d.dateKey === viewingDate);
+    return found?.day ?? readDay(viewingDate);
+  }, [days, viewingDate]);
+
+  const refresh = () => setRefreshCounter(c => c + 1);
+
+  // When switching to a past day, snap sub-tab back to log
+  useEffect(() => {
+    if (isHistory && activeSubTab !== "log") setActiveSubTab("log");
+  }, [isHistory, activeSubTab]);
 
   const handleAddFood = (foodId, amount) => {
     const food = getFoodById(foodId, customFoods);
@@ -80,12 +112,60 @@ export default function Meals({ activePhase }) {
   return (
     <div style={{ maxWidth: 860, margin: "0 auto", padding: isMobile ? "20px 16px" : "24px 24px" }}>
 
+      {/* Week strip */}
+      <WeekStrip
+        days={days}
+        viewingDate={viewingDate}
+        onSelect={setViewingDate}
+        customFoods={customFoods}
+        target={target}
+        phaseColor={phase.color}
+      />
+
+      {/* History banner */}
+      {isHistory && (
+        <div style={{
+          padding: "10px 14px",
+          borderRadius: 8,
+          background: "#FFF1E0",
+          border: "1px solid #E8C49A",
+          marginBottom: 14,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+          flexWrap: "wrap",
+        }}>
+          <div style={{ fontSize: 12, color: "#8B4513" }}>
+            📅 Viewing {formatLongDate(keyToDate(viewingDate))} (read-only)
+          </div>
+          <button
+            onClick={() => setViewingDate(todayKeyValue)}
+            style={{
+              padding: "6px 12px",
+              minHeight: 32,
+              borderRadius: 6,
+              border: "1px solid #E8C49A",
+              background: "#FFFFFF",
+              color: "#8B4513",
+              fontSize: 11,
+              fontWeight: "bold",
+              fontFamily: "'Georgia', serif",
+              cursor: "pointer",
+            }}
+          >
+            ← Back to today
+          </button>
+        </div>
+      )}
+
       {/* Levo panel */}
       <LevoPanel
         levoTakenAt={day.levoTakenAt}
         onTakeLevo={handleTakeLevo}
         onClearLevo={handleClearLevo}
         now={now}
+        isReadOnly={isHistory}
       />
 
       {/* Macro bars */}
@@ -96,31 +176,33 @@ export default function Meals({ activePhase }) {
         phaseColor={phase.color}
       />
 
-      {/* Sub-tab navigation */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 16 }}>
-        {SUB_TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveSubTab(tab.id)}
-            style={{
-              flex: 1,
-              padding: "12px 8px",
-              minHeight: 44,
-              borderRadius: 6,
-              border: activeSubTab === tab.id ? "none" : "1px solid rgba(0,0,0,0.08)",
-              background: activeSubTab === tab.id ? phase.color : "#FFFFFF",
-              color: activeSubTab === tab.id ? "#FFFFFF" : "#4C4C57",
-              cursor: "pointer",
-              fontSize: 13,
-              fontFamily: "'Georgia', serif",
-              fontWeight: activeSubTab === tab.id ? "bold" : "normal",
-              transition: "all 0.15s",
-            }}
-          >
-            {tab.icon} {tab.label}
-          </button>
-        ))}
-      </div>
+      {/* Sub-tab navigation (hide everything except Log when viewing history) */}
+      {!isHistory && (
+        <div style={{ display: "flex", gap: 4, marginBottom: 16 }}>
+          {SUB_TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveSubTab(tab.id)}
+              style={{
+                flex: 1,
+                padding: "12px 8px",
+                minHeight: 44,
+                borderRadius: 6,
+                border: activeSubTab === tab.id ? "none" : "1px solid rgba(0,0,0,0.08)",
+                background: activeSubTab === tab.id ? phase.color : "#FFFFFF",
+                color: activeSubTab === tab.id ? "#FFFFFF" : "#4C4C57",
+                cursor: "pointer",
+                fontSize: 13,
+                fontFamily: "'Georgia', serif",
+                fontWeight: activeSubTab === tab.id ? "bold" : "normal",
+                transition: "all 0.15s",
+              }}
+            >
+              {tab.icon} {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Sub-tab content */}
       {activeSubTab === "log" && (
@@ -133,9 +215,10 @@ export default function Meals({ activePhase }) {
           onRemove={handleRemove}
           onUpdateAmount={handleUpdateAmount}
           phaseColor={phase.color}
+          isReadOnly={isHistory}
         />
       )}
-      {activeSubTab === "plans" && (
+      {activeSubTab === "plans" && !isHistory && (
         <PlansView
           customFoods={customFoods}
           onAddTemplate={handleAddTemplate}
@@ -143,7 +226,7 @@ export default function Meals({ activePhase }) {
           phaseColor={phase.color}
         />
       )}
-      {activeSubTab === "foods" && (
+      {activeSubTab === "foods" && !isHistory && (
         <FoodsView
           customFoods={customFoods}
           onAddFood={handleAddFood}

@@ -24,7 +24,7 @@ const servingsBtnStyle = {
   justifyContent: "center",
 };
 
-export default function LogView({ entries, customFoods, levoTakenAt, now, onAddFood, onRemove, onUpdateAmount, phaseColor }) {
+export default function LogView({ entries, customFoods, levoTakenAt, now, onAddFood, onRemove, onUpdateAmount, phaseColor, isReadOnly = false }) {
   const allFoods = [...builtInFoods, ...customFoods];
   const favorites = allFoods.filter(f => f.favorite);
 
@@ -38,7 +38,8 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
 
   return (
     <div>
-      {/* Quick-add favorites */}
+      {/* Quick-add favorites (today only) */}
+      {!isReadOnly && (
       <div style={{ marginBottom: 18 }}>
         <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>
           Quick Add
@@ -85,11 +86,12 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
           })}
         </div>
       </div>
+      )}
 
       {/* Today's entries */}
       <div>
         <div style={{ fontSize: 11, color: "#6E6E78", textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>
-          Today ({entries.length} {entries.length === 1 ? "entry" : "entries"})
+          {isReadOnly ? "That day" : "Today"} ({entries.length} {entries.length === 1 ? "entry" : "entries"})
         </div>
         {entries.length === 0 ? (
           <div style={{
@@ -102,7 +104,9 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
             borderRadius: 10,
             background: "#FFFFFF",
           }}>
-            Nothing logged yet. Tap a Quick Add button above, or browse Plans / Foods.
+            {isReadOnly
+              ? "Nothing was logged this day."
+              : "Nothing logged yet. Tap a Quick Add button above, or browse Plans / Foods."}
           </div>
         ) : (
           <div style={{ borderRadius: 10, border: "1px solid rgba(0,0,0,0.08)", overflow: "hidden", background: "#FFFFFF" }}>
@@ -132,41 +136,53 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                       <div style={{ fontSize: 10, color: "#75757F", marginTop: 2 }}>{food.descriptor}</div>
                     )}
                   </div>
-                  {/* Amount adjuster — shows actual amount in food's natural unit */}
-                  <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 2,
-                    background: "rgba(0,0,0,0.04)",
-                    borderRadius: 6,
-                    padding: 2,
-                    flexShrink: 0,
-                  }}>
-                    <button
-                      onClick={() => {
-                        const next = amount - step;
-                        if (next < minAmount) onRemove(entry.id);
-                        else onUpdateAmount(entry.id, next);
-                      }}
-                      style={servingsBtnStyle}
-                      title={amount > minAmount ? "Less" : "Remove"}
-                    >
-                      −
-                    </button>
+                  {/* Amount adjuster — read-only shows static amount; today shows +/- */}
+                  {isReadOnly ? (
                     <div style={{
-                      minWidth: 70, textAlign: "center",
+                      padding: "6px 12px",
+                      background: "rgba(0,0,0,0.04)",
+                      borderRadius: 6,
                       fontSize: 13, color: "#1A1A1F", fontWeight: "bold",
+                      flexShrink: 0,
                     }}>
                       {formatAmountShort(amount, food)}
                     </div>
-                    <button
-                      onClick={() => onUpdateAmount(entry.id, amount + step)}
-                      style={servingsBtnStyle}
-                      title="More"
-                    >
-                      +
-                    </button>
-                  </div>
+                  ) : (
+                    <div style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                      background: "rgba(0,0,0,0.04)",
+                      borderRadius: 6,
+                      padding: 2,
+                      flexShrink: 0,
+                    }}>
+                      <button
+                        onClick={() => {
+                          const next = amount - step;
+                          if (next < minAmount) onRemove(entry.id);
+                          else onUpdateAmount(entry.id, next);
+                        }}
+                        style={servingsBtnStyle}
+                        title={amount > minAmount ? "Less" : "Remove"}
+                      >
+                        −
+                      </button>
+                      <div style={{
+                        minWidth: 70, textAlign: "center",
+                        fontSize: 13, color: "#1A1A1F", fontWeight: "bold",
+                      }}>
+                        {formatAmountShort(amount, food)}
+                      </div>
+                      <button
+                        onClick={() => onUpdateAmount(entry.id, amount + step)}
+                        style={servingsBtnStyle}
+                        title="More"
+                      >
+                        +
+                      </button>
+                    </div>
+                  )}
                   <div style={{ flex: 1, minWidth: 160, fontSize: 11, color: "#5C5C66" }}>
                     <div style={{ color: "#1A1A1F", fontWeight: "bold" }}>
                       {Math.round(macros.protein)}g protein
@@ -175,22 +191,24 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
                       {Math.round(macros.calories)} cal · {Math.round(macros.carbs)}g carbs · {Math.round(macros.fat)}g fat
                     </div>
                   </div>
-                  <button
-                    onClick={() => onRemove(entry.id)}
-                    style={{
-                      width: 32, height: 32,
-                      background: "transparent",
-                      border: "1px solid rgba(0,0,0,0.10)",
-                      borderRadius: 16,
-                      color: "#6E6E78",
-                      cursor: "pointer",
-                      fontSize: 14,
-                      flexShrink: 0,
-                    }}
-                    title="Remove entry"
-                  >
-                    ×
-                  </button>
+                  {!isReadOnly && (
+                    <button
+                      onClick={() => onRemove(entry.id)}
+                      style={{
+                        width: 32, height: 32,
+                        background: "transparent",
+                        border: "1px solid rgba(0,0,0,0.10)",
+                        borderRadius: 16,
+                        color: "#6E6E78",
+                        cursor: "pointer",
+                        fontSize: 14,
+                        flexShrink: 0,
+                      }}
+                      title="Remove entry"
+                    >
+                      ×
+                    </button>
+                  )}
                 </div>
               );
             })}

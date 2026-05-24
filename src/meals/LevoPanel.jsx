@@ -1,7 +1,27 @@
 import { levoPhase, levoMinutesElapsed, levoMinutesRemaining, formatTimeOfDay } from "../lib/macros.js";
 
-export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now }) {
+export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now, isReadOnly = false }) {
   const phase = levoPhase(levoTakenAt, now);
+
+  // In read-only (past day) mode, show static info only
+  if (isReadOnly) {
+    return (
+      <div style={{
+        padding: "10px 14px",
+        borderRadius: 10,
+        background: "#FFFFFF",
+        border: "1px solid rgba(0,0,0,0.08)",
+        marginBottom: 14,
+        fontSize: 12,
+        color: "#4C4C57",
+      }}>
+        {levoTakenAt
+          ? <>💊 Levo taken at <strong style={{ color: "#1A1A1F" }}>{formatTimeOfDay(levoTakenAt)}</strong></>
+          : <>💊 Levo not logged this day</>
+        }
+      </div>
+    );
+  }
 
   if (phase === "untaken") {
     return (
