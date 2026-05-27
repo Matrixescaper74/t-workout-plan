@@ -38,7 +38,6 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
       carbs: Number(customDraft.carbs) || 0,
       fat: Number(customDraft.fat) || 0,
       calories: Number(customDraft.calories) || 0,
-      levoInterference: "medium",
       favorite: false,
     };
     onSaveCustom(food);
@@ -116,7 +115,6 @@ export default function FoodsView({ customFoods, onAddFood, onSaveCustom, phaseC
                 <div style={{ fontSize: 10, color: "#5C5C66", marginTop: 2 }}>
                   <span style={{ color: "#1A1A1F", fontWeight: "bold" }}>{food.protein}g protein</span>
                   {" · "}{food.calories} cal · {food.carbs}g carbs · {food.fat}g fat
-                  {food.levoInterference === "high" && <span style={{ color: "#8B4513", marginLeft: 6 }}>· high levo interference</span>}
                 </div>
               </div>
               <button

@@ -5,7 +5,6 @@ import {
   formatAmountShort,
   getEntryAmount,
   macrosForEntry,
-  levoWarningForFood,
 } from "../lib/macros.js";
 
 const servingsBtnStyle = {
@@ -24,15 +23,11 @@ const servingsBtnStyle = {
   justifyContent: "center",
 };
 
-export default function LogView({ entries, customFoods, levoTakenAt, now, onAddFood, onRemove, onUpdateAmount, phaseColor, isReadOnly = false }) {
+export default function LogView({ entries, customFoods, onAddFood, onRemove, onUpdateAmount, phaseColor, isReadOnly = false }) {
   const allFoods = [...builtInFoods, ...customFoods];
   const favorites = allFoods.filter(f => f.favorite);
 
   const handleAdd = (food) => {
-    const warning = levoWarningForFood(food, levoTakenAt, now);
-    if (warning.level === "block") {
-      if (!window.confirm(`⚠️ ${warning.message}\n\nLog anyway?`)) return;
-    }
     onAddFood(food.id);
   };
 
@@ -49,41 +44,33 @@ export default function LogView({ entries, customFoods, levoTakenAt, now, onAddF
           gap: 8,
           flexWrap: "wrap",
         }}>
-          {favorites.map(food => {
-            const warning = levoWarningForFood(food, levoTakenAt, now);
-            return (
-              <button
-                key={food.id}
-                onClick={() => handleAdd(food)}
-                style={{
-                  padding: "10px 14px",
-                  minHeight: 44,
-                  borderRadius: 22,
-                  border: warning.level === "block"
-                    ? "1px solid #E8A765"
-                    : `1px solid ${phaseColor}55`,
-                  background: warning.level === "block"
-                    ? "#FFF1E0"
-                    : "#FFFFFF",
-                  color: "#1A1A1F",
-                  cursor: "pointer",
-                  fontSize: 12,
-                  fontFamily: "'Georgia', serif",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-                }}
-                title={warning.message || `${food.protein}g protein · ${food.calories} cal · serving: ${formatAmountFull(food.defaultAmount, food)}`}
-              >
-                {warning.level === "block" && <span>⚠️</span>}
-                <span>{food.name}</span>
-                <span style={{ color: phaseColor, fontSize: 10, fontWeight: "bold" }}>
-                  {food.protein}g protein
-                </span>
-              </button>
-            );
-          })}
+          {favorites.map(food => (
+            <button
+              key={food.id}
+              onClick={() => handleAdd(food)}
+              style={{
+                padding: "10px 14px",
+                minHeight: 44,
+                borderRadius: 22,
+                border: `1px solid ${phaseColor}55`,
+                background: "#FFFFFF",
+                color: "#1A1A1F",
+                cursor: "pointer",
+                fontSize: 12,
+                fontFamily: "'Georgia', serif",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+              }}
+              title={`${food.protein}g protein · ${food.calories} cal · serving: ${formatAmountFull(food.defaultAmount, food)}`}
+            >
+              <span>{food.name}</span>
+              <span style={{ color: phaseColor, fontSize: 10, fontWeight: "bold" }}>
+                {food.protein}g protein
+              </span>
+            </button>
+          ))}
         </div>
       </div>
       )}

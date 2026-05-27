@@ -97,49 +97,6 @@ export function statusFor(macro, current, target) {
   return "over";
 }
 
-// Levo phase based on time elapsed since dose
-export function levoPhase(levoTakenAt, now = new Date()) {
-  if (!levoTakenAt) return "untaken";
-  const elapsedMs = now - new Date(levoTakenAt);
-  const minutes = elapsedMs / 60000;
-  if (minutes < 0) return "untaken";
-  if (minutes < 30) return "blocked";
-  if (minutes < 60) return "soft";
-  if (minutes < 240) return "high-only";
-  return "clear";
-}
-
-export function levoMinutesElapsed(levoTakenAt, now = new Date()) {
-  if (!levoTakenAt) return 0;
-  return Math.max(0, Math.floor((now - new Date(levoTakenAt)) / 60000));
-}
-
-export function levoMinutesRemaining(levoTakenAt, untilMinutes, now = new Date()) {
-  const elapsed = levoMinutesElapsed(levoTakenAt, now);
-  return Math.max(0, untilMinutes - elapsed);
-}
-
-export function levoWarningForFood(food, levoTakenAt, now = new Date()) {
-  const phase = levoPhase(levoTakenAt, now);
-  if (phase === "untaken" || phase === "clear") return { level: "none", message: "" };
-  if (phase === "blocked") {
-    const rem = levoMinutesRemaining(levoTakenAt, 30, now);
-    return { level: "block", message: `Wait ${rem} more min before eating — levo absorption window.` };
-  }
-  if (phase === "soft") {
-    const rem = levoMinutesRemaining(levoTakenAt, 60, now);
-    return { level: "soft", message: `Recommended to wait ${rem} more min for best levo absorption.` };
-  }
-  if (food?.levoInterference === "high") {
-    const rem = levoMinutesRemaining(levoTakenAt, 240, now);
-    return {
-      level: "soft",
-      message: `This food can block levo absorption. Wait ${rem} more min if you can.`,
-    };
-  }
-  return { level: "none", message: "" };
-}
-
 export function formatTimeOfDay(isoString) {
   const d = new Date(isoString);
   let h = d.getHours();

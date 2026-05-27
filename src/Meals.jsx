@@ -97,12 +97,9 @@ export default function Meals({ activePhase }) {
     updateEntryAmount(entryId, newAmount);
     refresh();
   };
-  const handleTakeLevo = () => {
-    setLevoTakenNow();
-    refresh();
-  };
-  const handleClearLevo = () => {
-    clearLevo();
+  const handleToggleLevo = () => {
+    if (day.levoTakenAt) clearLevo();
+    else setLevoTakenNow();
     refresh();
   };
   const handleSaveCustom = (food) => {
@@ -160,12 +157,10 @@ export default function Meals({ activePhase }) {
         </div>
       )}
 
-      {/* Levo panel */}
+      {/* Levo check */}
       <LevoPanel
-        levoTakenAt={day.levoTakenAt}
-        onTakeLevo={handleTakeLevo}
-        onClearLevo={handleClearLevo}
-        now={now}
+        taken={!!day.levoTakenAt}
+        onToggle={handleToggleLevo}
         isReadOnly={isHistory}
       />
 
@@ -210,8 +205,6 @@ export default function Meals({ activePhase }) {
         <LogView
           entries={day.entries}
           customFoods={customFoods}
-          levoTakenAt={day.levoTakenAt}
-          now={now}
           onAddFood={handleAddFood}
           onRemove={handleRemove}
           onUpdateAmount={handleUpdateAmount}

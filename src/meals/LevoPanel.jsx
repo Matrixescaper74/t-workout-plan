@@ -1,155 +1,47 @@
-import { levoPhase, levoMinutesElapsed, levoMinutesRemaining, formatTimeOfDay } from "../lib/macros.js";
-
-export default function LevoPanel({ levoTakenAt, onTakeLevo, onClearLevo, now, isReadOnly = false }) {
-  const phase = levoPhase(levoTakenAt, now);
-
-  // In read-only (past day) mode, show static info only
-  if (isReadOnly) {
-    return (
-      <div style={{
-        padding: "10px 14px",
-        borderRadius: 10,
-        background: "#FFFFFF",
-        border: "1px solid rgba(0,0,0,0.08)",
-        marginBottom: 14,
-        fontSize: 12,
-        color: "#4C4C57",
-      }}>
-        {levoTakenAt
-          ? <>💊 Levo taken at <strong style={{ color: "#1A1A1F" }}>{formatTimeOfDay(levoTakenAt)}</strong></>
-          : <>💊 Levo not logged this day</>
-        }
-      </div>
-    );
-  }
-
-  if (phase === "untaken") {
-    return (
-      <div style={{
-        padding: "14px 18px",
-        borderRadius: 10,
-        background: "#FFFFFF",
-        border: "1px dashed rgba(0,0,0,0.15)",
-        marginBottom: 14,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        gap: 10,
-      }}>
-        <div style={{ fontSize: 13, color: "#4C4C57" }}>
-          <span style={{ color: "#1A1A1F", fontWeight: "bold" }}>💊 Levothyroxine</span> — take when you wake, then tap below
-        </div>
-        <button
-          onClick={onTakeLevo}
-          style={{
-            padding: "10px 16px",
-            minHeight: 44,
-            borderRadius: 8,
-            background: "#2D6B7C",
-            color: "#FFFFFF",
-            border: "none",
-            cursor: "pointer",
-            fontSize: 13,
-            fontWeight: "bold",
-            fontFamily: "'Georgia', serif",
-          }}
-        >
-          I took my levo
-        </button>
-      </div>
-    );
-  }
-
-  if (phase === "clear") {
-    return (
-      <div style={{
-        padding: "10px 14px",
-        borderRadius: 10,
-        background: "#E8F5E9",
-        border: "1px solid #A5D6A7",
-        marginBottom: 14,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 10,
-      }}>
-        <div style={{ fontSize: 12, color: "#1B5E20" }}>
-          ✅ Levo absorbed — eat anything (taken {formatTimeOfDay(levoTakenAt)})
-        </div>
-        <button
-          onClick={onClearLevo}
-          style={{
-            padding: "6px 10px",
-            background: "transparent",
-            border: "1px solid rgba(0,0,0,0.1)",
-            color: "#4C4C57",
-            borderRadius: 6,
-            fontSize: 11,
-            cursor: "pointer",
-          }}
-        >
-          reset
-        </button>
-      </div>
-    );
-  }
-
-  // blocked / soft / high-only
-  const elapsed = levoMinutesElapsed(levoTakenAt, now);
-  const remaining =
-    phase === "blocked" ? levoMinutesRemaining(levoTakenAt, 30, now) :
-    phase === "soft" ? levoMinutesRemaining(levoTakenAt, 60, now) :
-    levoMinutesRemaining(levoTakenAt, 240, now);
-
-  const banner =
-    phase === "blocked"
-      ? { bg: "#FFF1E0", border: "#E8A765", text: "#8B4513", emoji: "⏱️" }
-      : phase === "soft"
-      ? { bg: "#FFF7EB", border: "#E8C49A", text: "#9B5A1F", emoji: "⌛" }
-      : { bg: "#F4F1FA", border: "#C5BCE0", text: "#4A3E73", emoji: "💊" };
-
-  const headline =
-    phase === "blocked" ? `Wait ${remaining} more min before food or coffee` :
-    phase === "soft" ? `${remaining} min until full absorption window clears` :
-    `${remaining} min until clear of high-interference foods (coffee, cheese, calcium)`;
+export default function LevoPanel({ taken, onToggle, isReadOnly = false }) {
+  const handleClick = () => {
+    if (isReadOnly) return;
+    onToggle();
+  };
 
   return (
     <div style={{
       padding: "12px 16px",
       borderRadius: 10,
-      background: banner.bg,
-      border: `1px solid ${banner.border}`,
+      background: taken ? "#E8F5E9" : "#FFFFFF",
+      border: taken ? "1px solid #A5D6A7" : "1px dashed rgba(0,0,0,0.15)",
       marginBottom: 14,
       display: "flex",
       alignItems: "center",
-      justifyContent: "space-between",
-      flexWrap: "wrap",
-      gap: 10,
-    }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 200 }}>
-        <span style={{ fontSize: 20 }}>{banner.emoji}</span>
-        <div>
-          <div style={{ fontSize: 13, color: banner.text, fontWeight: "bold" }}>{headline}</div>
-          <div style={{ fontSize: 11, color: "#5C5C66", marginTop: 2 }}>
-            Levo taken at {formatTimeOfDay(levoTakenAt)} ({elapsed} min ago)
-          </div>
-        </div>
+      gap: 12,
+      cursor: isReadOnly ? "default" : "pointer",
+      userSelect: "none",
+    }}
+    onClick={handleClick}
+    role={isReadOnly ? undefined : "button"}
+    aria-pressed={!!taken}
+    >
+      <div style={{
+        width: 28,
+        height: 28,
+        borderRadius: 6,
+        border: taken ? "none" : "2px solid #4C4C57",
+        background: taken ? "#2D6B7C" : "transparent",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+        transition: "all 0.15s",
+      }}>
+        {taken && (
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8.5L6.5 12L13 4.5" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
       </div>
-      <button
-        onClick={onClearLevo}
-        style={{
-          padding: "6px 10px",
-          background: "transparent",
-          border: "1px solid rgba(0,0,0,0.15)",
-          color: "#4C4C57",
-          borderRadius: 6,
-          fontSize: 11,
-          cursor: "pointer",
-        }}
-      >
-        reset
-      </button>
+      <div style={{ fontSize: 14, color: "#1A1A1F", fontWeight: taken ? "bold" : "normal" }}>
+        💊 {taken ? "Took levothyroxine today" : "Take levothyroxine"}
+      </div>
     </div>
   );
 }
